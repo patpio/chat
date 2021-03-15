@@ -22,7 +22,7 @@ def room():
 
 @bp_message.route('/chat')
 def chat():
-    nick = session.get('nick', '')  # empty string because we don't want None
+    nick = session.get('nick', '')
     room = session.get('room', '')
 
     if nick == '' or room == '':
@@ -31,17 +31,17 @@ def chat():
     return render_template('chat.html', nick=nick, room=room)
 
 
-@socketio.on('message', namespace='/chat')  # listen for events 'message'
+@socketio.on('message', namespace='/chat')
 def handle_message(message):
     print(message)
     room = session.get('room', '')
-    emit('message', {'msg': f"{message['nick']}: {message['msg']}"}, namespace='/chat', broadcast=True, room=room)  # emit event, payload parameter {}
+    emit('message', {'msg': f"{message['nick']}: {message['msg']}"}, namespace='/chat', broadcast=True, room=room)
 
 
-@socketio.on('joined', namespace='/chat')  # namespace is only for websocket (zeby podzielic kilka funkcji w jednym polaczeniu/jednym websockecie)
+@socketio.on('joined', namespace='/chat')
 def handle_connect(connect):
     print(connect)
-    join_room(session.get('room', ''))  # to connect to room
+    join_room(session.get('room', ''))
 
 
 @socketio.on('left', namespace='/chat')
